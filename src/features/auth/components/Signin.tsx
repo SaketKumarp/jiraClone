@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { create } from "domain";
+
 import {
   Form,
   FormItem,
@@ -16,11 +16,12 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
+import Link from "next/link";
 
 export const Signin = () => {
   const formSchema = z.object({
-    email: z.email(),
-    password: z.string(),
+    email: z.email().trim(),
+    password: z.string().min(1, "minmum one characters required"),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -30,7 +31,9 @@ export const Signin = () => {
       password: "",
     },
   });
-
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    console.log({ values });
+  };
   return (
     <Card className="w-full h-full md:w-[487px]  border-none shadow-md">
       <CardHeader className="flex items-center justify-center text-center p-7">
@@ -42,32 +45,40 @@ export const Signin = () => {
 
       <CardContent className="p-7">
         <Form {...form}>
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               name="email"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <Input
-                    placeholder="enter your email"
-                    type="email"
-                    {...field}
-                  />
-                  ;
+                  <FormControl>
+                    <Input
+                      placeholder="enter your email"
+                      type="email"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="password"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      placeholder="enter your password"
+                      type="password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
 
-            <Input
-              required
-              placeholder="enter password"
-              value={""}
-              onChange={() => {}}
-              disabled={false}
-              type="password"
-              min={3}
-              max={256}
-            />
             <Button size={"lg"} disabled={false} className="w-full">
               Login
             </Button>
@@ -96,6 +107,17 @@ export const Signin = () => {
           Login with Github
         </Button>
       </CardContent>
+      <div className="px-7">
+        <DottedSeparator />
+        <CardContent className="p-8 flex items-center justify-center">
+          <p>
+            Don&apos;t have an account?
+            <Link href={"/sign-up"}>
+              <span className="text-blue-800">&nbsp;Signup</span>
+            </Link>
+          </p>
+        </CardContent>
+      </div>
     </Card>
   );
 };
