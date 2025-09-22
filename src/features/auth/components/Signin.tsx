@@ -32,7 +32,7 @@ export const Signin = () => {
   const { mutate } = useLogin();
 
   const onSubmit = (values: z.infer<typeof loginSchema>) => {
-    console.log("📨 Form submitted with:", { json: values });
+    console.log(values);
     mutate({ json: values });
   };
 
