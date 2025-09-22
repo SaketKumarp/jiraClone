@@ -7,8 +7,14 @@ import { ID } from "node-appwrite";
 import { AUTH_COOKIE } from "../constants";
 
 import { loginSchema, registerSchema } from "../schema";
+import { sessionMiddleware } from "@/lib/sessionMiddleware";
 
 const auth = new Hono()
+  .get("/current", sessionMiddleware, (ctx) => {
+    const user = ctx.get("user");
+
+    return ctx.json({ data: user });
+  })
   .post("/login", zValidator("json", loginSchema), async (c) => {
     const { email, password } = c.req.valid("json");
     const { account } = await createAdminClient();
@@ -39,8 +45,12 @@ const auth = new Hono()
     });
     return c.json({ success: true });
   })
-  .post("/logout", (c) => {
+  .post("/logout", sessionMiddleware, async (c) => {
+    const account = c.get("account");
+
     deleteCookie(c, AUTH_COOKIE);
+    await account.deleteSession("current");
+
     return c.json({ success: true });
   });
 
