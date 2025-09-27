@@ -39,8 +39,6 @@ export const Signup = () => {
   const { mutate } = useRegister();
 
   const onSubmit = (values: z.infer<typeof registerSchema>) => {
-    console.log({ json: values });
-
     mutate({ json: values });
   };
 

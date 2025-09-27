@@ -4,7 +4,7 @@ export const useCurrent = () => {
   const query = useQuery({
     queryKey: ["current"],
     queryFn: async () => {
-      const response = await client.api.auth.current.$get();
+      const response = await client.api.auth.current.$get(); //  this is client-side datafetching i guess
 
       if (!response.ok) {
         return null;
