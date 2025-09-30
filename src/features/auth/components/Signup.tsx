@@ -113,7 +113,7 @@ export const Signup = () => {
               )}
             />
             <Button size={"lg"} disabled={false} className="w-full">
-              Sign-Up
+              Register
             </Button>
           </form>
         </Form>

@@ -20,6 +20,8 @@ import Link from "next/link";
 import { loginSchema } from "../schema";
 import { useLogin } from "../api/use-login";
 
+import { useRouter } from "next/navigation";
+
 export const Signin = () => {
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -29,10 +31,19 @@ export const Signin = () => {
     },
   });
 
-  const { mutate } = useLogin();
+  const router = useRouter();
+
+  const { mutate: login } = useLogin();
 
   const onSubmit = (values: z.infer<typeof loginSchema>) => {
-    mutate({ json: values });
+    login(
+      { json: values },
+      {
+        onSuccess: () => {
+          router.replace("/");
+        },
+      }
+    );
   };
 
   return (

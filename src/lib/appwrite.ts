@@ -16,3 +16,7 @@ export async function createAdminClient() {
     },
   };
 }
+// another way of wrting
+//     const account = new Account(client);
+
+// const data = account.get();
