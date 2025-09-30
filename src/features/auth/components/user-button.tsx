@@ -14,6 +14,7 @@ import { DottedSeparator } from "@/components/dotted-separator";
 import { LogOut } from "lucide-react";
 import { useLogout } from "../api/use-logout";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export const UserButton = () => {
   const router = useRouter();
@@ -67,6 +68,10 @@ export const UserButton = () => {
                 {
                   onSuccess: () => {
                     router.replace("/sign-in");
+                    toast("logged out!");
+                  },
+                  onError: () => {
+                    toast("logged out failed!");
                   },
                 }
               )

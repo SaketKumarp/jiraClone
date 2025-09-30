@@ -7,7 +7,7 @@ export default async function Home() {
   if (!user) return redirect("/sign-in");
 
   return (
-    <div className="flex min-h-screen justify-center items-center ">
+    <div className="  ">
       <UserButton />
     </div>
   );

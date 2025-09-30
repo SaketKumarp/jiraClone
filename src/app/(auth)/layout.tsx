@@ -18,7 +18,7 @@ const authLayout = ({ children }: authLayoutProps) => {
       <div className="mx-auto max-w-screen-2xl p-4">
         <nav className="flex  justify-between items-center">
           <Image src="./logo.svg" alt="logo" height={100} width={100} />
-
+          {/* 
           <div className="flex items-center gap-2">
             <Button
               asChild
@@ -29,7 +29,7 @@ const authLayout = ({ children }: authLayoutProps) => {
                 {isSignIn ? "Sign-up" : "Login"}
               </Link>
             </Button>
-          </div>
+          </div> */}
         </nav>
         <div className="flex flex-col items-center justify-center pt-4 md:pt-14">
           {children}

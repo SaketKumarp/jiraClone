@@ -21,6 +21,7 @@ import { loginSchema } from "../schema";
 import { useLogin } from "../api/use-login";
 
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export const Signin = () => {
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -33,7 +34,7 @@ export const Signin = () => {
 
   const router = useRouter();
 
-  const { mutate: login } = useLogin();
+  const { mutate: login, isPending } = useLogin();
 
   const onSubmit = (values: z.infer<typeof loginSchema>) => {
     login(
@@ -41,6 +42,17 @@ export const Signin = () => {
       {
         onSuccess: () => {
           router.replace("/");
+          toast("Login successful!", {
+            description: "Welcome back 🎉",
+            classNames: {
+              description: "font-semibold, text-black",
+            },
+          });
+        },
+        onError: () => {
+          toast("Logged in failed", {
+            description: "Inavlid credentials 🎉",
+          });
         },
       }
     );
@@ -91,7 +103,7 @@ export const Signin = () => {
               )}
             />
 
-            <Button size={"lg"} disabled={false} className="w-full">
+            <Button size={"lg"} disabled={isPending} className="w-full">
               Login
             </Button>
           </form>
@@ -102,7 +114,7 @@ export const Signin = () => {
       </div>
       <CardContent className="p-7 flex flex-col gap-y-4">
         <Button
-          disabled={false}
+          disabled={isPending}
           variant={"secondary"}
           size={"lg"}
           className="w-full"
@@ -110,7 +122,7 @@ export const Signin = () => {
           <FcGoogle /> Login with Google
         </Button>
         <Button
-          disabled={false}
+          disabled={isPending}
           variant={"secondary"}
           size={"lg"}
           className="w-full"

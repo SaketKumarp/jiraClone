@@ -25,8 +25,11 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../schema";
 import { useRegister } from "../api/use-register";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export const Signup = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -36,10 +39,23 @@ export const Signup = () => {
     },
   });
 
-  const { mutate } = useRegister();
+  const { mutate: register, isPending } = useRegister();
 
   const onSubmit = (values: z.infer<typeof registerSchema>) => {
-    mutate({ json: values });
+    register(
+      { json: values },
+      {
+        onSuccess: () => {
+          router.replace("/");
+          toast("account created !", {
+            description: "welcome !",
+          });
+        },
+        onError: () => {
+          toast("Registration failed !");
+        },
+      }
+    );
   };
 
   return (
@@ -112,7 +128,11 @@ export const Signup = () => {
                 </FormItem>
               )}
             />
-            <Button size={"lg"} disabled={false} className="w-full">
+            <Button
+              size={"lg"}
+              disabled={isPending}
+              className="w-full font-bold cursor-pointer"
+            >
               Register
             </Button>
           </form>
@@ -123,18 +143,18 @@ export const Signup = () => {
       </div>
       <CardContent className="p-7 flex flex-col gap-y-4">
         <Button
-          disabled={false}
+          disabled={isPending}
           variant={"secondary"}
           size={"lg"}
-          className="w-full"
+          className="w-full font-bold cursor-pointer"
         >
           <FcGoogle /> Login with Google
         </Button>
         <Button
-          disabled={false}
+          disabled={isPending}
           variant={"secondary"}
           size={"lg"}
-          className="w-full"
+          className="w-full font-bold cursor-pointer"
         >
           <FaGithub />
           Login with Github
