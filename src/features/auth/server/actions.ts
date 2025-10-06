@@ -12,7 +12,7 @@ export const getCurrent = async () => {
       .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
       .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECTID!);
 
-    // In Next.js 15+ → cookies() returns a Promise, so you need to await it
+    // In Next.js 15+ → cookies() returns a Promise, so i need to await it
     const cookieStore = await cookies();
 
     // 3. Look for your custom auth cookie (set during login)
