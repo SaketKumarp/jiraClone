@@ -12,15 +12,20 @@ import {
   FormField,
   FormControl,
   FormMessage,
+  FormLabel,
 } from "@/components/ui/form";
 import { DottedSeparator } from "@/components/dotted-separator";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useCreateWorkSpace } from "../api/use-create-workspace";
 
 interface createWorkspaceprops {
-  onCancel: () => void;
+  onCancel?: () => void;
 }
 
-export const CreateWorkSpaceForm = () => {
+export const CreateWorkSpaceForm = ({ onCancel }: createWorkspaceprops) => {
+  const { mutate, isPending } = useCreateWorkSpace();
+
   const form = useForm<z.infer<typeof createWorkSpaceShema>>({
     resolver: zodResolver(createWorkSpaceShema),
     defaultValues: {
@@ -29,6 +34,7 @@ export const CreateWorkSpaceForm = () => {
   });
   const onSubmit = (values: z.infer<typeof createWorkSpaceShema>) => {
     console.log({ values });
+    mutate({ json: values });
   };
 
   return (
@@ -42,22 +48,41 @@ export const CreateWorkSpaceForm = () => {
       <CardContent>
         <Form {...form}>
           <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-            <FormField
-              name="name"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder="name of worksapce"
-                      type="text"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex flex-col gap-y-4">
+              <FormField
+                name="name"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Workspace name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="name of worksapce" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <DottedSeparator className="py-7" />
+            <div className="flex items-center justify-between">
+              <Button
+                type="button"
+                size={"lg"}
+                variant={"secondary"}
+                onClick={onCancel}
+                disabled={isPending}
+              >
+                cancel
+              </Button>
+              <Button
+                type="submit"
+                size={"lg"}
+                variant={"default"}
+                disabled={isPending}
+              >
+                Create Workspace
+              </Button>
+            </div>
           </form>
         </Form>
       </CardContent>
