@@ -44,12 +44,17 @@ export const CreateWorkSpaceForm = ({ onCancel }: CreateWorkspaceProps) => {
 
   const onSubmit = (values: z.infer<typeof createWorkSpaceShema>) => {
     console.log("Submitting:", values);
+    const finalValues = {
+      ...values,
+      image: values.image instanceof File ? values.image : "",
+    };
     mutate(
-      { json: values },
+      { form: finalValues },
       {
         onSuccess: () => {
           toast.success("Workspace created!");
           form.reset();
+          //TODO: redirect to workspace
         },
       }
     );

@@ -55,3 +55,7 @@ const auth = new Hono()
   });
 
 export default auth;
+
+
+// honojs for api and tanstack for end to end safety .. and appwrite for db storage 
+// i have to learn docker ...caching with reddish laod balancing and db design
