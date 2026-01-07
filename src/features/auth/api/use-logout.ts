@@ -15,7 +15,7 @@ export const useLogout = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["current"] });
-    },
+    queryClient.invalidateQueries({queryKey:["workspacess"]})},
   });
 
   return mutation;

@@ -43,7 +43,6 @@ export const CreateWorkSpaceForm = ({ onCancel }: CreateWorkspaceProps) => {
   });
 
   const onSubmit = (values: z.infer<typeof createWorkSpaceShema>) => {
-    console.log("Submitting:", values);
     const finalValues = {
       ...values,
       image: values.image instanceof File ? values.image : "",
@@ -188,6 +187,7 @@ export const CreateWorkSpaceForm = ({ onCancel }: CreateWorkspaceProps) => {
                 Cancel
               </Button>
               <Button
+                className="bg-[#8e44ad] text-white font-semibold"
                 type="submit"
                 size="lg"
                 variant="default"
