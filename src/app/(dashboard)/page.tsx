@@ -1,15 +1,15 @@
 import { getCurrent } from "@/features/auth/server/actions";
 import { redirect } from "next/navigation";
-
-import { CreateWorkSpaceForm } from "@/features/worksapces/components/create-workspace-form";
+import { getCurrentWorksapce } from "./workspace/action";
 
 export default async function Home() {
   const user = await getCurrent();
-  if (!user) return redirect("/sign-in"); // so instead of using middleware i am using other way to protect my routes
+  if (!user) return redirect("/sign-in");
 
-  return (
-    <div>
-      <CreateWorkSpaceForm />
-    </div>
-  );
+  const workspace = await getCurrentWorksapce();
+  if (!workspace) {
+    return redirect("/worksapace/create");
+  } else {
+    redirect(`/workspace/${workspace.data.documents[0].$id}`); // we will redirect directly into the first workspace of the appwrite
+  }
 }
