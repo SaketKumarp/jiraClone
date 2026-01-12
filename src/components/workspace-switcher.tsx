@@ -10,13 +10,12 @@ import {
 } from "./ui/select";
 import { WorkSpaceAvatar } from "@/features/worksapces/components/workspace-avatar";
 import { useRouter } from "next/navigation";
-import { useWorkspaceId } from "@/app/(dashboard)/workspace/hooks/use-worksapceid";
+import { useWorkspaceId } from "@/app/(dashboard)/workspace/hooks/use-worksapceId";
 
 export const WorkspaceSwitcher = () => {
   const { data: workspaces } = useGetWorkspace();
   const router = useRouter();
-  // const worksapceid = useWorkspaceId();
-  console.log();
+  const workspaceId = useWorkspaceId();
 
   const onSelect = (id: string) => {
     router.push(`/workspace/${id}`);
@@ -26,7 +25,7 @@ export const WorkspaceSwitcher = () => {
       <div className="flex items-center justify-between">
         <p className="text-xs uppercase bg-neutral-500 ">worksapces</p>
       </div>
-      <Select onValueChange={onSelect}>
+      <Select onValueChange={onSelect} value={workspaceId}>
         <SelectTrigger className="w-full bg-neutral-300 font-medium p-1 ">
           <SelectValue placeholder="no workspace selected" />
         </SelectTrigger>
@@ -47,4 +46,3 @@ export const WorkspaceSwitcher = () => {
     </div>
   );
 };
-// i have to make worksapce switcher here
