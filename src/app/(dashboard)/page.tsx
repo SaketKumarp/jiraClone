@@ -8,7 +8,7 @@ export default async function Home() {
 
   const workspace = await getCurrentWorksapce();
   if (!workspace) {
-    return redirect("/worksapace/create");
+    return redirect("/workspace/create");
   } else {
     redirect(`/workspace/${workspace.data.documents[0].$id}`); // we will redirect directly into the first workspace of the appwrite
   }

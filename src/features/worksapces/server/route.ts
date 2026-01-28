@@ -12,26 +12,39 @@ import { ID, Query } from "node-appwrite";
 import { createWorkSpaceShema } from "@/features/auth/schema";
 import { MemberRole } from "@/features/members/types";
 import { inviteCode } from "@/hooks/use-invite";
+import { json } from "zod";
 
 const workspaces = new Hono()
   .get("/", sessionMiddleware, async (ctx) => {
     const database = ctx.get("databases");
-    const users = ctx.get("user");
+    const user = ctx.get("user");
+
     const members = await database.listDocuments(DATABASE_ID, MEMBERS_ID, [
-      Query.equal("userid", users.$id),
+      Query.equal("userid", user.$id),
     ]);
 
-    // if (members.total === 0) {
-    //   return ctx.json({ data: { document: [], total: 0 } });
-    // }
+    // ✅ HARD GUARD — never hit Appwrite with empty contains
+    if (!members.documents.length) {
+      return ctx.json(
+        {
+          data: {
+            documents: [],
+            total: 0,
+          },
+        },
+        200,
+      );
+    }
 
-    const workspaceids = members.documents.map((member) => member.workspaceid);
-    const workspace = await database.listDocuments(DATABASE_ID, WORKSPACES_ID, [
-      Query.orderDesc("$createdAt"),
-      Query.contains("$id", workspaceids),
-    ]);
+    const workspaceIds = members.documents.map((member) => member.workspaceid);
 
-    return ctx.json({ data: workspace });
+    const workspaces = await database.listDocuments(
+      DATABASE_ID,
+      WORKSPACES_ID,
+      [Query.orderDesc("$createdAt"), Query.contains("$id", workspaceIds)],
+    );
+
+    return ctx.json({ data: workspaces }, 200);
   })
   .post(
     "/", // => /workspace
@@ -50,7 +63,7 @@ const workspaces = new Hono()
         const file = await storage.createFile(
           IMAGES_BUCKET_ID,
           ID.unique(),
-          image
+          image,
         );
 
         uploadedImageId = file.$id;
@@ -65,7 +78,7 @@ const workspaces = new Hono()
           userId: user.$id,
           imageurl: uploadedImageId,
           inviteCode: InviteCode,
-        }
+        },
       );
 
       await databases.createDocument(DATABASE_ID, MEMBERS_ID, ID.unique(), {
@@ -75,6 +88,6 @@ const workspaces = new Hono()
       });
 
       return ctx.json({ data: workspace });
-    }
+    },
   );
 export default workspaces;
