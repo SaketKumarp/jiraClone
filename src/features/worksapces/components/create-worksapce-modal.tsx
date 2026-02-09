@@ -4,10 +4,10 @@ import { CreateWorkSpaceForm } from "./create-workspace-form";
 import { useCreateWorkspaceModal } from "@/hooks/use-create-workspace-modal";
 
 export const CreateWorkSpaceModal = () => {
-  const { isopen, setIsopen } = useCreateWorkspaceModal();
+  const { isopen, setIsopen, close } = useCreateWorkspaceModal();
   return (
     <ResposiveModal open={isopen} onOpen={setIsopen}>
-      <CreateWorkSpaceForm />
+      <CreateWorkSpaceForm onCancel={close} />
     </ResposiveModal>
   );
 };
