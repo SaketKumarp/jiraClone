@@ -5,6 +5,7 @@ export const useCreateWorkspaceModal = () => {
     "create-workspace",
     parseAsBoolean.withDefault(false).withOptions({ clearOnDefault: true }),
   );
+  
 
   const open = () => setIsopen(true);
   const close = () => setIsopen(false);
