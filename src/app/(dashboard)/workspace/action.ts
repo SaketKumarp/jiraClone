@@ -1,6 +1,6 @@
 "use server";
 
-import { Account, Client, Databases, Query, Users } from "node-appwrite";
+import { Account, Client, Databases, Query } from "node-appwrite";
 
 import { cookies } from "next/headers";
 import { AUTH_COOKIE } from "@/features/auth/constants";
