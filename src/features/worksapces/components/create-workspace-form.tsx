@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
+import { cn } from "@/lib/utils";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -23,6 +24,7 @@ import { AvatarFallback, Avatar } from "@/components/ui/avatar";
 import { ImageIcon } from "lucide-react";
 import { useCreateWorkSpace } from "../api/use-create-workspace";
 import { createWorkSpaceShema } from "@/features/auth/schema";
+import { useRouter } from "next/navigation";
 
 // ✅ updated schema (zod)
 
@@ -33,7 +35,7 @@ interface CreateWorkspaceProps {
 export const CreateWorkSpaceForm = ({ onCancel }: CreateWorkspaceProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { mutate, isPending } = useCreateWorkSpace();
-
+  const router = useRouter();
   const form = useForm<z.infer<typeof createWorkSpaceShema>>({
     resolver: zodResolver(createWorkSpaceShema),
     defaultValues: {
@@ -50,12 +52,13 @@ export const CreateWorkSpaceForm = ({ onCancel }: CreateWorkspaceProps) => {
     mutate(
       { form: finalValues },
       {
-        onSuccess: () => {
+        onSuccess: ({ data }) => {
           toast.success("Workspace created!");
           form.reset();
-          //TODO: redirect to workspace
+
+          router.push(`/workspace/${data.$id}`);
         },
-      }
+      },
     );
   };
 
@@ -147,7 +150,7 @@ export const CreateWorkSpaceForm = ({ onCancel }: CreateWorkspaceProps) => {
                             if (file) {
                               if (file.size > 1024 * 1024) {
                                 toast.error(
-                                  "File too large! Max 1 MB allowed."
+                                  "File too large! Max 1 MB allowed.",
                                 );
                                 return;
                               }
@@ -176,13 +179,19 @@ export const CreateWorkSpaceForm = ({ onCancel }: CreateWorkspaceProps) => {
 
             <DottedSeparator className="py-7" />
 
-            <div className="flex items-center justify-between">
+            <div
+              className={cn(
+                "flex items-center",
+                onCancel ? "justify-between" : "justify-center",
+              )}
+            >
               <Button
                 type="button"
                 size="lg"
                 variant="secondary"
                 onClick={onCancel}
                 disabled={isPending}
+                className={cn(!onCancel && "invisible")}
               >
                 Cancel
               </Button>

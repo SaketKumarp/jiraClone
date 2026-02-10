@@ -1,11 +1,11 @@
 import { CreateWorkSpaceForm } from "@/features/worksapces/components/create-workspace-form";
 
-const createWorkspace = () => {
+const WorkspaceCreate = () => {
   return (
-    <div>
+    <div className="flex flex-col min-h-screen items-center ">
       <CreateWorkSpaceForm />
     </div>
   );
 };
 
-export default createWorkspace;
+export default WorkspaceCreate;
