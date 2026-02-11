@@ -2,17 +2,24 @@ import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 
 import { sessionMiddleware } from "@/lib/sessionMiddleware";
+
 import {
   DATABASE_ID,
   IMAGES_BUCKET_ID,
   MEMBERS_ID,
   WORKSPACES_ID,
 } from "@/config";
+
 import { ID, Query } from "node-appwrite";
-import { createWorkSpaceShema } from "@/features/auth/schema";
+import { getMember } from "@/features/members/utils";
+
+import {
+  createWorkSpaceShema,
+  updateWorkSpaceShema,
+} from "@/features/auth/schema";
+
 import { MemberRole } from "@/features/members/types";
 import { inviteCode } from "@/hooks/use-invite";
-import { json } from "zod";
 
 const workspaces = new Hono()
   .get("/", sessionMiddleware, async (ctx) => {
@@ -88,6 +95,28 @@ const workspaces = new Hono()
       });
 
       return ctx.json({ data: workspace });
+    },
+  )
+  .patch(
+    "/:workspaceId",
+    zValidator("form", updateWorkSpaceShema),
+    sessionMiddleware,
+    async (ctx) => {
+      const databases = ctx.get("databases");
+      const storage = ctx.get("storage");
+      const user = ctx.get("user");
+      const { workspaceId } = ctx.req.param();
+      const { name, image } = ctx.req.valid("form");
+      const member = await getMember({
+        workspaceId,
+        databases,
+        userId: user.$id,
+      });
+
+      if (!member || member.role != MemberRole.ADMIN) {
+        return ctx.json({ error: "unauthorized" }, 401);
+      }
+      // await databases.update(DATABASE_ID,)
     },
   );
 export default workspaces;

@@ -1,11 +1,11 @@
-"use client";
+import { getCurrent } from "@/features/auth/server/actions";
+import { redirect } from "next/navigation";
 
-import { useParams } from "next/navigation";
+const workSpaceId = async () => {
+  const user = await getCurrent();
+  if (!user) redirect("/sign-in");
 
-const workSpaceId = () => {
-  const param = useParams<{ workspaceId: string }>();
-
-  return <div>workSpaceId : {param.workspaceId}</div>;
+  return <div>workSpaceId : </div>;
 };
 
 export default workSpaceId;
