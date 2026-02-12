@@ -116,7 +116,29 @@ const workspaces = new Hono()
       if (!member || member.role != MemberRole.ADMIN) {
         return ctx.json({ error: "unauthorized" }, 401);
       }
-      // await databases.update(DATABASE_ID,)
+      let uploadedImageId: string | undefined;
+
+      if (image instanceof File) {
+        const file = await storage.createFile(
+          IMAGES_BUCKET_ID,
+          ID.unique(),
+          image,
+        );
+
+        uploadedImageId = file.$id;
+      }
+      const workspace = await databases.updateDocument(
+        DATABASE_ID,
+        WORKSPACES_ID,
+        workspaceId,
+        {
+          name,
+          userId: user.$id,
+          imageurl: uploadedImageId,
+        },
+      );
+
+      return ctx.json({ data: workspace });
     },
   );
 export default workspaces;
