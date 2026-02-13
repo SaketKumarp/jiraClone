@@ -1,16 +1,15 @@
 import { getCurrent } from "@/features/auth/server/actions";
 import { redirect } from "next/navigation";
-interface workspaceIdSettingsPagePorps {}
 
 const workspaceIdSettingsPage = async ({
   params,
 }: {
-  params: Promise<{ slug: string | string[] }>;
+  params: Promise<{ workspaceId: string }>;
 }) => {
-  const { slug } = await params;
+  const { workspaceId } = await params;
   const user = await getCurrent();
   if (!user) redirect("/sign-in");
-  return <div>workspaceIdSettingsPage{slug}</div>;
+  return <div>workspaceIdSettingsPage : {workspaceId}</div>;
 };
 
 export default workspaceIdSettingsPage;
