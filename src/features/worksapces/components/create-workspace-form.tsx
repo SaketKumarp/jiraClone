@@ -17,7 +17,6 @@ import {
   FormMessage,
   FormLabel,
 } from "@/components/ui/form";
-import { DottedSeparator } from "@/components/dotted-separator";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AvatarFallback, Avatar } from "@/components/ui/avatar";
@@ -25,8 +24,6 @@ import { ImageIcon } from "lucide-react";
 import { useCreateWorkSpace } from "../api/use-create-workspace";
 import { createWorkSpaceShema } from "@/features/auth/schema";
 import { useRouter } from "next/navigation";
-
-// ✅ updated schema (zod)
 
 interface CreateWorkspaceProps {
   onCancel?: () => void;
@@ -36,6 +33,7 @@ export const CreateWorkSpaceForm = ({ onCancel }: CreateWorkspaceProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { mutate, isPending } = useCreateWorkSpace();
   const router = useRouter();
+
   const form = useForm<z.infer<typeof createWorkSpaceShema>>({
     resolver: zodResolver(createWorkSpaceShema),
     defaultValues: {
@@ -49,20 +47,20 @@ export const CreateWorkSpaceForm = ({ onCancel }: CreateWorkspaceProps) => {
       ...values,
       image: values.image instanceof File ? values.image : "",
     };
+
     mutate(
       { form: finalValues },
       {
         onSuccess: ({ data }) => {
           toast.success("Workspace created!");
           form.reset();
-
           router.push(`/workspace/${data.$id}`);
         },
       },
     );
   };
 
-  // 🧹 Clean up blob URLs on unmount
+  // Cleanup blob URLs
   useEffect(() => {
     return () => {
       const file = form.getValues("image");
@@ -73,136 +71,171 @@ export const CreateWorkSpaceForm = ({ onCancel }: CreateWorkspaceProps) => {
   }, [form]);
 
   return (
-    <Card className="w-full h-full md:w-[487px] border-none shadow-md">
-      <CardHeader className="flex items-center justify-center text-center p-7">
-        <CardTitle className="text-2xl">Create Workspace</CardTitle>
+    <Card
+      className="
+        w-full 
+        md:w-[480px] 
+        rounded-2xl 
+        border 
+        border-neutral-200 
+        bg-white 
+        shadow-[0_20px_60px_rgba(0,0,0,0.06)]
+      "
+    >
+      {/* Header */}
+      <CardHeader className="text-center p-8 pb-4">
+        <CardTitle className="text-2xl font-semibold tracking-tight">
+          Create Workspace
+        </CardTitle>
+        <p className="text-sm text-neutral-500 mt-1">
+          Set up a new workspace to manage your projects
+        </p>
       </CardHeader>
 
-      <div className="px-7 mb-2">
-        <DottedSeparator />
-      </div>
-
-      <CardContent>
+      <CardContent className="px-8 pb-8">
         <Form {...form}>
-          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-y-4">
-              {/* Workspace Name */}
-              <FormField
-                name="name"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Workspace Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter workspace name"
-                        disabled={isPending}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+          <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+            {/* Workspace Name */}
+            <FormField
+              name="name"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium">
+                    Workspace Name
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter workspace name"
+                      disabled={isPending}
+                      className="
+                        h-11 
+                        rounded-xl 
+                        border-neutral-200 
+                        focus-visible:ring-2 
+                        focus-visible:ring-primary/30
+                      "
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              {/* Workspace Image Upload */}
-              <FormField
-                name="image"
-                control={form.control}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Workspace Icon</FormLabel>
-                    <div className="flex items-center gap-x-4">
-                      {field.value ? (
-                        <div className="size-[72px] relative rounded-md overflow-hidden">
-                          <Image
-                            fill
-                            className="object-cover"
-                            alt="workspace image"
-                            src={
-                              field.value instanceof File
-                                ? URL.createObjectURL(field.value)
-                                : field.value
-                            }
-                          />
-                        </div>
-                      ) : (
-                        <Avatar className="size-[72px]">
-                          <AvatarFallback>
-                            <ImageIcon className="size-[32px] text-neutral-400" />
-                          </AvatarFallback>
-                        </Avatar>
-                      )}
+            {/* Workspace Image */}
+            <FormField
+              name="image"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium">
+                    Workspace Icon
+                  </FormLabel>
 
-                      <div className="flex flex-col">
-                        <p className="text-sm text-muted-foreground">
-                          JPG, PNG, JPEG, or SVG — Max 1 MB
-                        </p>
-
-                        <input
-                          type="file"
-                          accept=".jpg,.jpeg,.png,.svg"
-                          className="hidden"
-                          ref={inputRef}
-                          disabled={isPending}
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              if (file.size > 1024 * 1024) {
-                                toast.error(
-                                  "File too large! Max 1 MB allowed.",
-                                );
-                                return;
-                              }
-                              field.onChange(file);
-                            }
-                          }}
+                  <div className="flex items-center gap-5">
+                    {field.value ? (
+                      <div className="relative size-[72px] overflow-hidden rounded-xl border border-neutral-200">
+                        <Image
+                          fill
+                          className="object-cover"
+                          alt="workspace image"
+                          src={
+                            field.value instanceof File
+                              ? URL.createObjectURL(field.value)
+                              : field.value
+                          }
                         />
-
-                        <Button
-                          type="button"
-                          size="xs"
-                          variant="outline"
-                          className="w-fit mt-2 bg-blue-300"
-                          disabled={isPending}
-                          onClick={() => inputRef.current?.click()}
-                        >
-                          Upload Image
-                        </Button>
                       </div>
+                    ) : (
+                      <Avatar className="size-[72px] rounded-xl border border-neutral-200 bg-neutral-50">
+                        <AvatarFallback>
+                          <ImageIcon className="size-8 text-neutral-400" />
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
+
+                    <div className="flex flex-col">
+                      <p className="text-xs text-neutral-500">
+                        JPG, PNG, SVG — Max 1MB
+                      </p>
+
+                      <input
+                        type="file"
+                        accept=".jpg,.jpeg,.png,.svg"
+                        className="hidden"
+                        ref={inputRef}
+                        disabled={isPending}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+
+                          if (file.size > 1024 * 1024) {
+                            toast.error("File too large! Max 1MB allowed.");
+                            return;
+                          }
+
+                          field.onChange(file);
+                        }}
+                      />
+
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        disabled={isPending}
+                        onClick={() => inputRef.current?.click()}
+                        className="
+                          mt-3 
+                          rounded-lg 
+                          border-neutral-200 
+                          hover:bg-neutral-100
+                        "
+                      >
+                        Upload Image
+                      </Button>
                     </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                  </div>
 
-            <DottedSeparator className="py-7" />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
+            {/* Footer */}
             <div
               className={cn(
-                "flex items-center",
+                "flex items-center pt-2",
                 onCancel ? "justify-between" : "justify-center",
               )}
             >
               <Button
                 type="button"
+                variant="ghost"
                 size="lg"
-                variant="secondary"
                 onClick={onCancel}
                 disabled={isPending}
                 className={cn(!onCancel && "invisible")}
               >
                 Cancel
               </Button>
+
               <Button
-                className="bg-[#8e44ad] text-white font-semibold"
                 type="submit"
                 size="lg"
-                variant="default"
                 disabled={isPending}
+                className="
+                  h-11 
+                  px-6 
+                  rounded-xl 
+                  bg-primary 
+                  text-white 
+                  shadow-sm 
+                  hover:opacity-90 
+                  transition
+                "
               >
-                Create Workspace
+                {isPending ? "Creating..." : "Create Workspace"}
               </Button>
             </div>
           </form>
