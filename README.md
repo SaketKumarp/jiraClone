@@ -15,6 +15,7 @@
 
 
 <img width="1470" height="956" alt="Screenshot 2026-05-24 at 22 41 23" src="https://github.com/user-attachments/assets/a17d763d-ed22-4fd2-ae6a-a0e73ef56fc9" />
+ i will inegrate this with agentic ai in future updates
 
 
  
