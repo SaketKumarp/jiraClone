@@ -23,11 +23,8 @@ import { Button } from "@/components/ui/button";
 import { AvatarFallback, Avatar } from "@/components/ui/avatar";
 import { ImageIcon } from "lucide-react";
 
-import {
-  createWorkSpaceShema,
-  updateWorkSpaceShema,
-} from "@/features/auth/schema";
-import { useRouter } from "next/navigation";
+import { updateWorkSpaceShema } from "@/features/auth/schema";
+
 import { workspace } from "../types";
 import { useUpdateWorkSpace } from "../api/use-update-workspace";
 
@@ -36,13 +33,13 @@ interface editWorkspaceformProps {
   initialValues: workspace;
 }
 
-export const editWorkspaceform = ({
+export const EditWorkspaceform = ({
   onCancel,
   initialValues,
 }: editWorkspaceformProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { mutate, isPending } = useUpdateWorkSpace();
-  const router = useRouter();
+
   const form = useForm<z.infer<typeof updateWorkSpaceShema>>({
     resolver: zodResolver(updateWorkSpaceShema),
     defaultValues: {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetWorkspace } from "@/features/worksapces/api/use-get-workspace";
+import { useGetWorkspace } from "@/features/workspaces/api/use-get-workspace";
 import {
   Select,
   SelectContent,
@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { WorkSpaceAvatar } from "@/features/worksapces/components/workspace-avatar";
+import { WorkSpaceAvatar } from "@/features/workspaces/components/workspace-avatar";
 import { useRouter } from "next/navigation";
 import { useWorkspaceId } from "@/app/(dashboard)/workspace/hooks/use-worksapceId";
 import { RiAddCircleFill } from "react-icons/ri";

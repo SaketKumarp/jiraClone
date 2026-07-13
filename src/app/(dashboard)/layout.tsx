@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/nav-bar";
 import { Sidebar } from "@/components/side-bar";
-import { CreateWorkSpaceModal } from "@/features/worksapces/components/create-worksapce-modal";
+import { CreateWorkSpaceModal } from "@/features/workspaces/components/create-worksapce-modal";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

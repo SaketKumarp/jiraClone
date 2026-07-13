@@ -1,5 +1,5 @@
 import auth from "@/features/auth/server/route";
-import workspaces from "@/features/worksapces/server/route";
+import workspaces from "@/features/workspaces/server/route";
 import { Hono } from "hono";
 import { handle } from "hono/vercel";
 

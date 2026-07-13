@@ -30,20 +30,24 @@ const auth = new Hono()
     return c.json({ success: true });
   })
   .post("/register", zValidator("json", registerSchema), async (c) => {
-    const { name, email, password } = c.req.valid("json");
+    try {
+      const { name, email, password } = c.req.valid("json");
 
-    const { account } = await createAdminClient();
-    await account.create(ID.unique(), email, password, name);
+      const { account } = await createAdminClient();
+      await account.create(ID.unique(), email, password, name);
 
-    const session = await account.createEmailPasswordSession(email, password);
-    setCookie(c, AUTH_COOKIE, session.secret, {
-      path: "/",
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      maxAge: 60 * 60 * 24 * 30,
-    });
-    return c.json({ success: true });
+      const session = await account.createEmailPasswordSession(email, password);
+      setCookie(c, AUTH_COOKIE, session.secret, {
+        path: "/",
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 60 * 60 * 24 * 30,
+      });
+      return c.json({ success: true });
+    } catch (error) {
+      return c.json({ error: error || "something went wrong" }, 500);
+    }
   })
   .post("/logout", sessionMiddleware, async (c) => {
     const account = c.get("account");
@@ -56,6 +60,6 @@ const auth = new Hono()
 
 export default auth;
 
-
-// honojs for api and tanstack for end to end safety .. and appwrite for db storage 
+// honojs for api and tanstack for end to end safety .. and appwrite for db storage
 // i have to learn docker ...caching with reddish laod balancing and db design
+// basically system design stuff !
